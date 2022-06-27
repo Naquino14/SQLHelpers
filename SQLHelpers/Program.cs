@@ -1,16 +1,26 @@
-﻿using QueryHelper;
-using QB = QueryHelper.QueryBuilder;
+﻿using QueryHelpers;
 using c = System.Console;
 
 // tests
 
-var query = new QB()
+var query = new QueryBuilder()
     .CreateTable("Meme")
-    .CreateAddIdentity("FunnyID", QB.DType.INT, 1, 1)
-    .CreateAddNVP("FunnyName", QB.PType.VARCHAR, 50)
-    .CreateAddNVP("FunnyContent", QB.PType.VARCHAR, 2000)
-    .CreateAddNVP("FunnyImgPath", QB.PType.VARCHAR, 100)
-    .CreateAddNVP("FunnyScore", QB.DType.INT)
-    .CreateAddNVP("FunnyIsCringe", QB.DType.BIT);
+    .CreateAddIdentity("FunnyID", DType.INT, 1, 1)
+    .CreateAddNVP("FunnyName", PType.VARCHAR, 50)
+    .CreateAddNVP("FunnyContent", PType.VARCHAR, 2000)
+    .CreateAddNVP("FunnyImgPath", PType.VARCHAR, 100)
+    .CreateAddNVP("FunnyScore", DType.INT)
+    .CreateAddNVP("FunnyIsCringe", DType.BIT);
 
 c.WriteLine(query.Query);
+
+var columns = new string[] { "FunnyName", "FunnyContent" };
+var values = new string[] { "guh?", "reveal?!?!?" };
+
+query = new QueryBuilder()
+    .InsertIntoCol("Meme")
+    .AddInsertColumn(columns)
+    .AddInsertValue(values)
+    .AddInsertValue("penis");
+
+//c.WriteLine(query.Query);

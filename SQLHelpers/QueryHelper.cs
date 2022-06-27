@@ -1,59 +1,8 @@
-﻿namespace QueryHelper
-{
-    using QPN = QueryPropertyNullException;
-    
+﻿namespace QueryHelpers
+{    
     public class QueryBuilder
     {
-        public enum Order
-        {
-            Ascending,
-            Descending
-        }
-
-        /// <summary>
-        /// Non parameterized data type
-        /// </summary>
-        public enum DType
-        {
-            TEXT,
-            NCHAR,
-            NVARCHAR,
-            NTEXT,
-            VARBINARY,
-            IMAGE,
-            BIT,
-            TINYINT,
-            SMALLINT,
-            INT,
-            BIGINT,
-            SMALLMONEY,
-            MONEY,
-            REAL,
-            DATETIME,
-            DATETIME2,
-            SMALLDATETIME,
-            DATE,
-            TIME,
-            DATETIMEOFFSET,
-            TIMESTAMP,
-            SQL_VARIANT,
-            UNIQUEIDENTIFIER,
-            XML,
-            CURSOR,
-            TABLE
-
-        }
         
-        /// <summary>
-        /// Parameterized data type
-        /// </summary>
-        public enum PType
-        {
-            CHAR,
-            VARCHAR,
-            BINARY,
-            FLOAT
-        }
         
         public string Query { get; private set; }
         public string? Table { get; set; }
@@ -68,7 +17,7 @@
             return this;
         }
 
-        public QueryBuilder From() => From(Table ?? throw new QPN());
+        public QueryBuilder From() => From(Table ?? throw new QueryPropertyNullException("Table"));
         public QueryBuilder From(string table)
         {
             this.Query += $"FROM {table} ";
@@ -81,6 +30,7 @@
             return this;
         }
 
+        public QueryBuilder Update(string data) => Update(Table ?? throw new QueryPropertyNullException("Table"), data);
         public QueryBuilder Update(string table, string data)
         {
             this.Query += $"UPDATE {table} SET {data} ";
@@ -125,6 +75,44 @@
             return this;
         }
 
+        public QueryBuilder InsertIntoCol() => InsertIntoCol(Table ?? throw new QueryPropertyNullException("Table"));
+        public QueryBuilder InsertIntoCol(string table)
+        {
+            this.Table = table;
+            this.Query += $"INSERT INTO {table} ( ) VALUES ( ";
+            return this;
+        }
+
+        public QueryBuilder InsertInto()
+        {
+            this.Query += $"INSERT INTO {Table} VALUES ( ";
+            return this;
+        }
+
+        public QueryBuilder AddInsertColumn(string name)
+        {
+            this.Query = $"{this.Query[..^11]}'{name}', ) VALUES ( ";
+            return this;
+        }
+
+        public QueryBuilder AddInsertColumn(string[] columns)
+        {
+            this.Query = $"{this.Query[..^11]}'{string.Join("', '", columns)}', ) VALUES ( ";
+            return this;
+        }
+        
+        public QueryBuilder AddInsertValue(string value)
+        {
+            this.Query = $"{(this.Query[^2] == ')' ? this.Query[..^2] : this.Query)}{value}, ) ";
+            return this;
+        }
+
+        public QueryBuilder AddInsertValue(string[] values)
+        {
+            this.Query = $"{(this.Query[^2] == ')' ? this.Query[..^2] : this.Query)}{string.Join(", ", values)}, ) ";
+            return this;
+        }
+
         public QueryBuilder Drop()
         {
             this.Query += $"DROP TABLE {Table} ";
@@ -139,12 +127,5 @@
 
         public override string ToString() => $"Query: {Query} {(Table is not null ? $" || Default table: {Table}" : "")}";
 
-    }
-
-    public class QueryPropertyNullException : Exception
-    {
-        public QueryPropertyNullException() : base() { }
-        public QueryPropertyNullException(string propName) : base($"Property {propName} was null.") { }
-        public override string ToString() => base.ToString();
     }
 }
