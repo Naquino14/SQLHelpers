@@ -37,7 +37,6 @@
         XML,
         CURSOR,
         TABLE
-
     }
 
     /// <summary>
