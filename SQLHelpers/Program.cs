@@ -37,6 +37,8 @@ internal class Program
         query = new QueryBuilder().SelectDistinct("FunnyScore").AddSelectColumn("FunnyName").AddSelectColumn("FunnyID").From("Meme")
             .Select().Top(2).From().Where("FunnyID", Op.EQAL, 0)
             .Select().TopPercent(3).From().Where("FunnyID", Op.EQAL, 1);
+
+        query = new QueryBuilder("Meme").Select().From();
         
         c.WriteLine(query.Query);
     }

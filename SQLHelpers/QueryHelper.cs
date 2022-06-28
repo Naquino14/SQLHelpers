@@ -22,7 +22,7 @@
 
         public QueryBuilder Select()
         {
-            query += $"SELECT ";
+            query += $"SELECT * ";
             return this;
         }
         public QueryBuilder Select(string column)
@@ -33,7 +33,7 @@
         }
         public QueryBuilder SelectDistinct()
         {
-            query += $"SELECT DISTINCT ";
+            query += $"SELECT DISTINCT * ";
             return this;
         }
         public QueryBuilder SelectDistinct(string column)
@@ -44,7 +44,7 @@
 
         public QueryBuilder AddSelectColumn(string column)
         {
-            query = $"{query[..^1]}{(query[^7..^1] == "SELECT" || query[^9..^1] == "DISTINCT" ? "" : ',')} {column} ";
+            query = $"{query[..^3]}{(query[^9..^3] == "SELECT" || query[^11..^3] == "DISTINCT" ? "" : ',')} {column} ";
             return this;
         }
         public QueryBuilder AddSelectColumn(string[] columns)
@@ -232,23 +232,6 @@
             // smart line breaks
             // TODO
 
-            // smart select
-            // TODO redo this 
-            // copilot says use regex
-            // var selectFix = query.Split("SELECT");
-            // foreach (var e in selectFix)
-            //     Console.WriteLine($"{e}|");
-            
-            // var postSelectKeywords = new string[] { "DISTINCT", "PERCENT", "TOP" };
-            
-            //foreach (var keyword in postSelectKeywords)
-            //    for (int i = 0; i < selectFix.Length; i++)
-            //        if (selectFix[i].Length > 0 && !selectFix[i].Contains('*') && selectFix[i].Contains(keyword)
-            //            && selectFix[i].IndexOf("FROM") - (selectFix[i].IndexOf(keyword) + keyword.Length) <= 1)
-            //            selectFix[i] = selectFix[i].Insert(selectFix[i].IndexOf(keyword) + keyword.Length, " *");
-
-            
-            // query = string.Join("SELECT", selectFix);
             return this;
         }
     }
