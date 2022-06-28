@@ -1,4 +1,4 @@
-﻿using QueryHelpers;
+﻿using SQLHelpers;
 using c = System.Console;
 
 internal class Program

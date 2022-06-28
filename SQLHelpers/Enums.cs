@@ -1,4 +1,4 @@
-﻿namespace QueryHelpers
+﻿namespace SQLHelpers
 {
     public enum Order
     {
