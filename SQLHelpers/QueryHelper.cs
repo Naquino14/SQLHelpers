@@ -28,7 +28,7 @@
         public QueryBuilder Select(string column)
         {
             Select();
-            query += $"{column} ";
+            query = $"{query[^9..^2]}{column} ";
             return this;
         }
         public QueryBuilder SelectDistinct()
@@ -44,13 +44,19 @@
 
         public QueryBuilder AddSelectColumn(string column)
         {
-            query = $"{query[..^3]}{(query[^9..^3] == "SELECT" || query[^11..^3] == "DISTINCT" ? "" : ',')} {column} ";
+            query = $"{(query[^2] == '*' ? query[..^3] : query[..^1])}{(query[^9..^3] == "SELECT" || query[^11..^3] == "DISTINCT" ? "" : ',')} {column} ";
             return this;
         }
         public QueryBuilder AddSelectColumn(string[] columns)
         {
             foreach (var column in columns)
                 AddSelectColumn(column);
+            return this;
+        }
+
+        public QueryBuilder As(string alias)
+        {
+            query += $"AS {alias} ";
             return this;
         }
 
@@ -164,7 +170,7 @@
 
         public QueryBuilder AddInsertColumn(string name)
         {
-            query = $"{query[..^11]}'{name}', ) VALUES ( ";
+            query = $"{query[..^11]}{name}, ) VALUES ( ";
             return this;
         }
 
